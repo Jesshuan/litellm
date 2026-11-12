@@ -58,10 +58,11 @@ from litellm.integrations.custom_logger import CustomLogger
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Mapping
-    from prometheus_client import Counter
 
     from ecologits.model_repository import ModelRepository
-    from ecologits.tracers.utils import ImpactsOutput, _ProviderConfig as EcoLogitsProviderConfig
+    from ecologits.tracers.utils import ImpactsOutput
+    from ecologits.tracers.utils import _ProviderConfig as EcoLogitsProviderConfig
+    from prometheus_client import Counter
 
 ECOLOGITS_ZONE_METADATA_KEY = "ecologits_electricity_mix_zone"
 ECOLOGITS_KWARGS_RESULT_KEY = "ecologits"
@@ -383,7 +384,11 @@ class EcoLogitsLogger(CustomLogger):
             candidates += (response_model,)
 
         return next(
-            (name for name in candidates if sdk.models.find_model(provider=ecologits_provider, model_name=name) is not None),
+            (
+                name
+                for name in candidates
+                if sdk.models.find_model(provider=ecologits_provider, model_name=name) is not None
+            ),
             None,
         )
 
